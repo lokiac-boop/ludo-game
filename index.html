@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Pocket Ludo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: #121826;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 16px 8px;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    /* Game Status Header */
+    #status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 360px;
+      background: #1e293b;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    .turn-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .turn-badge {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Ludo Board: 15 x 15 CSS Grid */
+    #board-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: 1 / 1;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      display: grid;
+      grid-template-columns: repeat(15, 1fr);
+      grid-template-rows: repeat(15, 1fr);
+      overflow: hidden;
+      border: 3px solid #334155;
+    }
+
+    .cell {
+      border: 0.5px solid #cbd5e1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Color Bases / Quadrants */
+    .base-red    { background: #ef4444 !important; }
+    .base-green  { background: #10b981 !important; }
+    .base-yellow { background: #f59e0b !important; }
+    .base-blue   { background: #3b82f6 !important; }
+
+    /* Home yard inner box */
+    .base-inner {
+      width: 68%;
+      height: 68%;
+      background: #ffffff;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      padding: 6px;
+      gap: 6px;
+    }
+
+    .inner-slot {
+      background: #f1f5f9;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Center Triangle Goal */
+    .center-goal {
+      background: #475569;
+      grid-column: 7 / 10;
+      grid-row: 7 / 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+      color: #f8fafc;
+    }
+
+    /* Token styling */
+    .token {
+      width: 80%;
+      height: 80%;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .token:active {
+      transform: scale(1.2);
+    }
+
+    .token-red    { background: #dc2626; }
+    .token-green  { background: #059669; }
+    .token-yellow { background: #d97706; }
+    .token-blue   { background: #2563eb; }
+
+    .token.selectable {
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); box-shadow: 0 0 0 2px #fff; }
+      100% { transform: scale(1.15); box-shadow: 0 0 0 4px #fbbf24; }
+    }
+
+    /* Controls */
+    #controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-top: 16px;
+      width: 100%;
+      max-width: 360px;
+      justify-content: center;
+    }
+
+    .dice-btn {
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .dice-btn:disabled {
+      background: #475569;
+      color: #94a3b8;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .dice-face {
+      width: 44px;
+      height: 44px;
+      background: white;
+      color: #0f172a;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>POCKET LUDO</h1>
+
+  <div id="status-bar">
+    <div class="turn-indicator">
+      <span>Turn:</span>
+      <span id="turn-badge" class="turn-badge" style="background: #dc2626;"></span>
+      <span id="turn-name">Red</span>
+    </div>
+    <div id="message" style="font-size: 0.85rem; color: #94a3b8;">Roll the dice!</div>
+  </div>
+
+  <div id="board-wrapper">
+    <!-- Red Base: Top Left (Rows 1-6, Cols 1-6) -->
+    <div class="cell base-red" style="grid-area: 1 / 1 / 7 / 7;">
+      <div class="base-inner" id="red-base"></div>
+    </div>
+
+    <!-- Green Base: Top Right (Rows 1-6, Cols 10-16) -->
+    <div class="cell base-green" style="grid-area: 1 / 10 / 7 / 16;">
+      <div class="base-inner" id="green-base"></div>
+    </div>
+
+    <!-- Blue Base: Bottom Left (Rows 10-16, Cols 1-6) -->
+    <div class="cell base-blue" style="grid-area: 10 / 1 / 16 / 7;">
+      <div class="base-inner" id="blue-base"></div>
+    </div>
+
+    <!-- Yellow Base: Bottom Right (Rows 10-16, Cols 10-16) -->
+    <div class="cell base-yellow" style="grid-area: 10 / 10 / 16 / 16;">
+      <div class="base-inner" id="yellow-base"></div>
+    </div>
+
+    <!-- Center Goal Area -->
+    <div class="center-goal">HOME</div>
+  </div>
+
+  <div id="controls">
+    <div class="dice-face" id="dice-val">-</div>
+    <button class="dice-btn" id="roll-btn" onclick="rollDice()">ROLL</button>
+  </div>
+
+  <script>
+    // Game State
+    const PLAYERS = ['red', 'green', 'yellow', 'blue'];
+    let currentTurnIndex = 0;
+    let diceValue = null;
+    let awaitingMove = false;
+
+    // Tokens state: position -1 means inside yard base, 0-51 track index, 99 completed
+    const tokens = {
+      red:    [-1, -1, -1, -1],
+      green:  [-1, -1, -1, -1],
+      yellow: [-1, -1, -1, -1],
+      blue:   [-1, -1, -1, -1]
+    };
+
+    // Starting indices on the common circular 52-tile track
+    const START_INDEX = { red: 0, green: 13, yellow: 26, blue: 39 };
+
+    function initBases() {
+      PLAYERS.forEach(player => {
+        const base = document.getElementById(`${player}-base`);
+        base.innerHTML = '';
+        for (let i = 0; i < 4; i++) {
+          const slot = document.createElement('div');
+          slot.className = 'inner-slot';
+          slot.id = `${player}-slot-${i}`;
+          slot.onclick = () => handleTokenClick(player, i);
+          base.appendChild(slot);
+        }
+      });
+      renderTokens();
+    }
+
+    function renderTokens() {
+      // Clear all yard slots
+      PLAYERS.forEach(player => {
+        for (let i = 0; i < 4; i++) {
+          const slot = document.getElementById(`${player}-slot-${i}`);
+          slot.innerHTML = '';
+          if (tokens[player][i] === -1) {
+            const tokenEl = document.createElement('div');
+            tokenEl.className = `token token-${player}`;
+            if (awaitingMove && player === PLAYERS[currentTurnIndex] && diceValue === 6) {
+              tokenEl.classList.add('selectable');
+            }
+            slot.appendChild(tokenEl);
+          }
+        }
+      });
+    }
+
+    function rollDice() {
+      if (awaitingMove) return;
+
+      const rollBtn = document.getElementById('roll-btn');
+      const diceDisplay = document.getElementById('dice-val');
+      const msg = document.getElementById('message');
+
+      // Simple rolling animation
+      rollBtn.disabled = true;
+      let count = 0;
+      const interval = setInterval(() => {
+        diceDisplay.innerText = Math.floor(Math.random() * 6) + 1;
+        count++;
+        if (count > 6) {
+          clearInterval(interval);
+          diceValue = Math.floor(Math.random() * 6) + 1;
+          diceDisplay.innerText = diceValue;
+          handleDiceOutcome();
+        }
+      }, 50);
+    }
+
+    function handleDiceOutcome() {
+      const activePlayer = PLAYERS[currentTurnIndex];
+      const playerTokens = tokens[activePlayer];
+      const msg = document.getElementById('message');
+
+      // Check if player has any valid moves
+      const hasBaseTokens = playerTokens.some(pos => pos === -1);
+      const hasFieldTokens = playerTokens.some(pos => pos >= 0 && pos < 99);
+
+      if (diceValue === 6 && hasBaseTokens) {
+        msg.innerText = "Select a token to exit yard!";
+        awaitingMove = true;
+      } else if (hasFieldTokens) {
+        msg.innerText = "Select a token to move.";
+        awaitingMove = true;
+      } else {
+        msg.innerText = "No moves. Next turn!";
+        setTimeout(passTurn, 1000);
+      }
+      renderTokens();
+    }
+
+    function handleTokenClick(player, tokenIndex) {
+      if (!awaitingMove || player !== PLAYERS[currentTurnIndex]) return;
+
+      const pos = tokens[player][tokenIndex];
+
+      // Bringing token out of the yard
+      if (pos === -1 && diceValue === 6) {
+        tokens[player][tokenIndex] = START_INDEX[player];
+        document.getElementById('message').innerText = `${player.toUpperCase()} deployed token! Roll again.`;
+        awaitingMove = false;
+        renderTokens();
+        document.getElementById('roll-btn').disabled = false;
+        return; // Rolling a 6 gives another turn!
+      }
+
+      // Moving active token
+      if (pos >= 0) {
+        tokens[player][tokenIndex] = (pos + diceValue) % 52;
+        awaitingMove = false;
+        renderTokens();
+        if (diceValue !== 6) {
+          passTurn();
+        } else {
+          document.getElementById('message').innerText = "Rolled 6! Roll again.";
+          document.getElementById('roll-btn').disabled = false;
+        }
+      }
+    }
+
+    function passTurn() {
+      currentTurnIndex = (currentTurnIndex + 1) % PLAYERS.length;
+      const nextPlayer = PLAYERS[currentTurnIndex];
+      
+      document.getElementById('turn-name').innerText = nextPlayer.charAt(0).toUpperCase() + nextPlayer.slice(1);
+      
+      const badgeColors = { red: '#dc2626', green: '#059669', yellow: '#d97706', blue: '#2563eb' };
+      document.getElementById('turn-badge').style.background = badgeColors[nextPlayer];
+
+      document.getElementById('message').innerText = "Roll the dice!";
+      document.getElementById('roll-btn').disabled = false;
+      document.getElementById('dice-val').innerText = "-";
+      diceValue = null;
+      awaitingMove = false;
+      renderTokens();
+    }
+
+    // Initialize board on load
+    initBases();
+  </script>
+</body>
+</html>

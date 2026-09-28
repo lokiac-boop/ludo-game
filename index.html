@@ -24,7 +24,6 @@
       padding: 8px;
     }
 
-    /* Top Control Bar */
     #top-bar {
       display: flex;
       justify-content: space-between;
@@ -54,7 +53,6 @@
       cursor: pointer;
     }
 
-    /* Status Display */
     #status-card {
       display: flex;
       align-items: center;
@@ -89,7 +87,6 @@
       color: #cbd5e1;
     }
 
-    /* 15x15 Classic Ludo Board */
     #board-container {
       position: relative;
       width: 100%;
@@ -114,13 +111,11 @@
       background: #ffffff;
     }
 
-    /* Gametion High-Contrast Colors */
     .c-red    { background-color: #e11d48 !important; }
     .c-green  { background-color: #059669 !important; }
     .c-yellow { background-color: #d97706 !important; }
     .c-blue   { background-color: #2563eb !important; }
 
-    /* Safe / Stump Star Tile */
     .stump-tile::after {
       content: "★";
       font-size: 0.95rem;
@@ -128,7 +123,6 @@
       font-weight: 900;
     }
 
-    /* Corner Yards */
     .yard-box {
       display: flex;
       align-items: center;
@@ -159,73 +153,52 @@
       cursor: pointer;
     }
 
-    /* Center Goal Area */
     #center-goal {
       grid-area: 7 / 7 / 10 / 10;
       position: relative;
       background: #0f172a;
     }
 
-    .tri-r {
-      position: absolute;
-      top: 0; left: 0; width: 0; height: 0;
-      border-style: solid;
-      border-width: 38px 0 38px 38px;
-      border-color: transparent transparent transparent #e11d48;
-    }
-
-    .tri-g {
-      position: absolute;
-      top: 0; left: 0; width: 0; height: 0;
-      border-style: solid;
-      border-width: 38px 38px 0 38px;
-      border-color: #059669 transparent transparent transparent;
-    }
-
-    .tri-y {
-      position: absolute;
-      top: 0; right: 0; width: 0; height: 0;
-      border-style: solid;
-      border-width: 38px 38px 38px 0;
-      border-color: transparent #d97706 transparent transparent;
-    }
-
-    .tri-b {
-      position: absolute;
-      bottom: 0; left: 0; width: 0; height: 0;
-      border-style: solid;
-      border-width: 0 38px 38px 38px;
-      border-color: transparent transparent #2563eb transparent;
-    }
-
-    /* Tokens with 3D Depth Rings */
+    /* Gametion-style Location Pin Tokens */
     .token-piece {
-      width: 78%;
-      height: 78%;
-      border-radius: 50%;
-      border: 2px solid #ffffff;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45);
+      width: 65%;
+      height: 65%;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(45deg);
+      box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.5);
       cursor: pointer;
-      position: relative;
+      position: absolute;
       z-index: 10;
-      transition: transform 0.15s ease-out;
+      transition: transform 0.15s ease-out, filter 0.15s ease-out;
     }
 
-    .t-red    { background: radial-gradient(circle at 35% 35%, #fb7185, #be123c); }
-    .t-green  { background: radial-gradient(circle at 35% 35%, #4ade80, #047857); }
-    .t-yellow { background: radial-gradient(circle at 35% 35%, #fde047, #b45309); }
-    .t-blue   { background: radial-gradient(circle at 35% 35%, #60a5fa, #1d4ed8); }
+    .token-piece::after {
+      content: '';
+      position: absolute;
+      top: 25%;
+      left: 25%;
+      width: 50%;
+      height: 50%;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
+    }
+
+    .t-red    { background: linear-gradient(135deg, #fb7185, #be123c); }
+    .t-green  { background: linear-gradient(135deg, #4ade80, #047857); }
+    .t-yellow { background: linear-gradient(135deg, #fde047, #b45309); }
+    .t-blue   { background: linear-gradient(135deg, #60a5fa, #1d4ed8); }
 
     .token-piece.pulse-active {
-      animation: tokenGlow 0.5s infinite alternate;
+      animation: pinBounce 0.6s infinite alternate;
+      z-index: 20;
     }
 
-    @keyframes tokenGlow {
-      from { transform: scale(0.9); }
-      to { transform: scale(1.22); filter: drop-shadow(0 0 6px #fff); }
+    @keyframes pinBounce {
+      from { transform: rotate(45deg) scale(0.9) translateY(0); }
+      to { transform: rotate(45deg) scale(1.1) translateY(-4px); filter: drop-shadow(-2px 4px 6px rgba(255,255,255,0.6)); }
     }
 
-    /* Action Dice Container */
     #bottom-controls {
       display: flex;
       align-items: center;
@@ -290,33 +263,19 @@
   </div>
 
   <div id="board-container">
-    <!-- Red Base -->
     <div class="yard-box c-red" style="grid-area: 1 / 1 / 7 / 7;">
       <div class="yard-white-tray" id="tray-red"></div>
     </div>
-
-    <!-- Green Base -->
     <div class="yard-box c-green" style="grid-area: 1 / 10 / 7 / 16;">
       <div class="yard-white-tray" id="tray-green"></div>
     </div>
-
-    <!-- Blue Base -->
     <div class="yard-box c-blue" style="grid-area: 10 / 1 / 16 / 7;">
       <div class="yard-white-tray" id="tray-blue"></div>
     </div>
-
-    <!-- Yellow Base -->
     <div class="yard-box c-yellow" style="grid-area: 10 / 10 / 16 / 16;">
       <div class="yard-white-tray" id="tray-yellow"></div>
     </div>
-
-    <!-- Center Goal Quadrants -->
-    <div id="center-goal">
-      <div class="tri-r"></div>
-      <div class="tri-g"></div>
-      <div class="tri-y"></div>
-      <div class="tri-b"></div>
-    </div>
+    <div id="center-goal"></div>
   </div>
 
   <div id="bottom-controls">
@@ -325,21 +284,14 @@
   </div>
 
   <script>
-    // --- 1. Sound Effects via Web Audio API ---
+    // --- 1. Audio System ---
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
-
     function getAudioContext() {
-      if (!audioCtx) {
-        audioCtx = new AudioContext();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (!audioCtx) audioCtx = new AudioContext();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       return audioCtx;
     }
-
-    // Dice rattling / tumble sound effect
     function playDiceSound() {
       try {
         const ctx = getAudioContext();
@@ -351,18 +303,12 @@
             osc.frequency.setValueAtTime(140 + Math.random() * 80, ctx.currentTime);
             gain.gain.setValueAtTime(0.3, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.06);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.06);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(); osc.stop(ctx.currentTime + 0.06);
           }, i * 45);
         }
-      } catch (e) {
-        // Fallback gracefully if browser audio is blocked
-      }
+      } catch (e) {}
     }
-
-    // Token step hop / pop sound effect
     function playStepSound() {
       try {
         const ctx = getAudioContext();
@@ -373,14 +319,10 @@
         osc.frequency.exponentialRampToValueAtTime(720, ctx.currentTime + 0.08);
         gain.gain.setValueAtTime(0.35, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.08);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(); osc.stop(ctx.currentTime + 0.08);
       } catch (e) {}
     }
-
-    // Capture / Success cheer sound
     function playCaptureSound() {
       try {
         const ctx = getAudioContext();
@@ -393,138 +335,93 @@
             osc.frequency.setValueAtTime(freq, ctx.currentTime);
             gain.gain.setValueAtTime(0.4, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.12);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(); osc.stop(ctx.currentTime + 0.12);
           }, idx * 70);
         });
       } catch (e) {}
     }
 
-    // --- 2. Board Track & Coordinates ---
+    // --- 2. Board Configuration & Paths ---
     const COMMON_PATH = [
-      [7,2], [7,3], [7,4], [7,5], [7,6],
-      [6,7], [5,7], [4,7], [3,7], [2,7], [1,7],
-      [1,8],
-      [1,9], [2,9], [3,9], [4,9], [5,9], [6,9],
-      [7,10], [7,11], [7,12], [7,13], [7,14], [7,15],
-      [8,15],
-      [9,15], [9,14], [9,13], [9,12], [9,11], [9,10],
-      [10,9], [11,9], [12,9], [13,9], [14,9], [15,9],
-      [15,8],
-      [15,7], [14,7], [13,7], [12,7], [11,7], [10,7],
-      [9,6], [9,5], [9,4], [9,3], [9,2], [9,1],
-      [8,1],
-      [7,1]
+      [7,2],[7,3],[7,4],[7,5],[7,6], [6,7],[5,7],[4,7],[3,7],[2,7],[1,7], [1,8],
+      [1,9],[2,9],[3,9],[4,9],[5,9],[6,9], [7,10],[7,11],[7,12],[7,13],[7,14],[7,15], [8,15],
+      [9,15],[9,14],[9,13],[9,12],[9,11],[9,10], [10,9],[11,9],[12,9],[13,9],[14,9],[15,9], [15,8],
+      [15,7],[14,7],[13,7],[12,7],[11,7],[10,7], [9,6],[9,5],[9,4],[9,3],[9,2],[9,1], [8,1], [7,1]
     ];
-
     const SAFE_INDICES = [0, 8, 13, 21, 26, 34, 39, 47];
-    const START_INDEX = { red: 0, green: 13, yellow: 26, blue: 39 };
     const PLAYERS = ['red', 'green', 'yellow', 'blue'];
     const PLAYER_COLORS = { red: '#e11d48', green: '#059669', yellow: '#d97706', blue: '#2563eb' };
+    
+    // Build deterministic 57-step paths (0-56) for each color
+    const PATHS = { red: [], green: [], yellow: [], blue: [] };
+    const START = { red: 0, green: 13, yellow: 26, blue: 39 };
 
-    // --- 3. Persistent Game State ---
+    PLAYERS.forEach(p => {
+      let startIdx = START[p];
+      // 51 common track tiles
+      for(let i = 0; i <= 50; i++) PATHS[p].push(`path-${(startIdx + i) % 52}`);
+      // 5 home lane tiles
+      for(let i = 1; i <= 5; i++) PATHS[p].push(`${p}-home-${i}`);
+      // Final Goal
+      PATHS[p].push(`center-goal`);
+    });
+
+    // --- 3. Game State ---
     const STORAGE_KEY = 'pocket_ludo_gametion_state';
-
     let gameState = {
       currentTurn: 0,
       rolledNumber: null,
       isWaitingForMove: false,
+      isAnimating: false,
       message: 'Roll the dice',
       tokens: {
-        red:    [-1, -1, -1, -1],
-        green:  [-1, -1, -1, -1],
-        yellow: [-1, -1, -1, -1],
-        blue:   [-1, -1, -1, -1]
+        red: [-1, -1, -1, -1], green: [-1, -1, -1, -1],
+        yellow: [-1, -1, -1, -1], blue: [-1, -1, -1, -1]
       }
     };
 
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
-    }
-
+    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState)); }
     function loadState() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        try {
-          gameState = JSON.parse(saved);
-        } catch (e) {
-          console.error("State parse error, starting fresh");
-        }
+        try { 
+          gameState = JSON.parse(saved); 
+          gameState.isAnimating = false; // Reset animation lock on reload
+        } catch (e) {}
       }
     }
-
     function confirmResetGame() {
-      if (confirm("Reset current game and start fresh from the beginning?")) {
+      if (confirm("Reset game?")) {
         localStorage.removeItem(STORAGE_KEY);
-        gameState = {
-          currentTurn: 0,
-          rolledNumber: null,
-          isWaitingForMove: false,
-          message: 'Roll the dice',
-          tokens: {
-            red:    [-1, -1, -1, -1],
-            green:  [-1, -1, -1, -1],
-            yellow: [-1, -1, -1, -1],
-            blue:   [-1, -1, -1, -1]
-          }
-        };
-        updateUI();
-        renderTokens();
+        location.reload();
       }
     }
 
-    // --- 4. Board Construction ---
+    // --- 4. Board Setup ---
     function buildBoardGrid() {
       const board = document.getElementById('board-container');
 
-      // 52 Common Path Squares
       COMMON_PATH.forEach(([r, c], idx) => {
         const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.id = `path-${idx}`;
+        cell.className = 'cell'; cell.id = `path-${idx}`;
         cell.style.gridArea = `${r} / ${c} / ${r + 1} / ${c + 1}`;
-
         if (idx === 0) cell.classList.add('c-red');
         if (idx === 13) cell.classList.add('c-green');
         if (idx === 26) cell.classList.add('c-yellow');
         if (idx === 39) cell.classList.add('c-blue');
-
-        if (SAFE_INDICES.includes(idx)) {
-          cell.classList.add('stump-tile');
-        }
-
+        if (SAFE_INDICES.includes(idx)) cell.classList.add('stump-tile');
         board.appendChild(cell);
       });
 
-      // Colored Home Run Lanes
-      for (let i = 2; i <= 6; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell c-red';
-        cell.style.gridArea = `8 / ${i} / 9 / ${i + 1}`;
-        board.appendChild(cell);
-      }
-      for (let i = 2; i <= 6; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell c-green';
-        cell.style.gridArea = `${i} / 8 / ${i + 1} / 9`;
-        board.appendChild(cell);
-      }
-      for (let i = 10; i <= 14; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell c-yellow';
-        cell.style.gridArea = `8 / ${i} / 9 / ${i + 1}`;
-        board.appendChild(cell);
-      }
-      for (let i = 10; i <= 14; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell c-blue';
-        cell.style.gridArea = `${i} / 8 / ${i + 1} / 9`;
-        board.appendChild(cell);
+      // Render colored home paths
+      for (let i = 1; i <= 5; i++) {
+        createHomeCell(board, 'c-red', `red-home-${i}`, 8, i + 1);
+        createHomeCell(board, 'c-green', `green-home-${i}`, i + 1, 8);
+        createHomeCell(board, 'c-yellow', `yellow-home-${i}`, 8, 15 - i);
+        createHomeCell(board, 'c-blue', `blue-home-${i}`, 15 - i, 8);
       }
 
-      // 4 Player Home Yard Slots
       PLAYERS.forEach(color => {
         const tray = document.getElementById(`tray-${color}`);
         tray.innerHTML = '';
@@ -538,32 +435,30 @@
       });
     }
 
-    // --- 5. Token Rendering & UI Sync ---
+    function createHomeCell(board, colorClass, id, r, c) {
+      const cell = document.createElement('div');
+      cell.className = `cell ${colorClass}`;
+      cell.id = id;
+      cell.style.gridArea = `${r} / ${c} / ${r + 1} / ${c + 1}`;
+      board.appendChild(cell);
+    }
+
+    // --- 5. Token Logic & UI Sync ---
     function renderTokens() {
-      // Clear Yard Slots
-      PLAYERS.forEach(p => {
-        for (let i = 0; i < 4; i++) {
-          const slot = document.getElementById(`${p}-slot-${i}`);
-          slot.innerHTML = '';
-          if (gameState.tokens[p][i] === -1) {
-            slot.appendChild(buildTokenElement(p, i));
-          }
-        }
-      });
+      // Clear specific pins without destroying inner trays
+      document.querySelectorAll('.token-piece').forEach(t => t.remove());
 
-      // Clear Track Tiles
-      for (let i = 0; i < 52; i++) {
-        const cell = document.getElementById(`path-${i}`);
-        const existing = cell.querySelectorAll('.token-piece');
-        existing.forEach(t => t.remove());
-      }
-
-      // Render tokens on track
       PLAYERS.forEach(p => {
-        gameState.tokens[p].forEach((pos, idx) => {
-          if (pos >= 0 && pos < 52) {
-            const cell = document.getElementById(`path-${pos}`);
-            cell.appendChild(buildTokenElement(p, idx));
+        gameState.tokens[p].forEach((step, idx) => {
+          const piece = buildTokenElement(p, idx);
+          if (step === -1) {
+            const slot = document.getElementById(`${p}-slot-${idx}`);
+            piece.style.position = 'relative'; // Reset for grid layout
+            slot.appendChild(piece);
+          } else {
+            const tileId = PATHS[p][step];
+            const cell = document.getElementById(tileId);
+            if (cell) cell.appendChild(piece);
           }
         });
       });
@@ -572,21 +467,16 @@
     function buildTokenElement(player, tokenIdx) {
       const piece = document.createElement('div');
       piece.className = `token-piece t-${player}`;
-
       const activeColor = PLAYERS[gameState.currentTurn];
-      const isPlayerTurn = (player === activeColor) && gameState.isWaitingForMove;
+      const isPlayerTurn = (player === activeColor) && gameState.isWaitingForMove && !gameState.isAnimating;
 
       if (isPlayerTurn) {
-        const pos = gameState.tokens[player][tokenIdx];
-        if ((pos === -1 && gameState.rolledNumber === 6) || pos >= 0) {
-          piece.classList.add('pulse-active');
-        }
+        const step = gameState.tokens[player][tokenIdx];
+        if (step === -1 && gameState.rolledNumber === 6) piece.classList.add('pulse-active');
+        if (step >= 0 && step + gameState.rolledNumber <= 56) piece.classList.add('pulse-active');
       }
 
-      piece.onclick = (e) => {
-        e.stopPropagation();
-        handleTokenTap(player, tokenIdx);
-      };
+      piece.onclick = (e) => { e.stopPropagation(); handleTokenTap(player, tokenIdx); };
       return piece;
     }
 
@@ -596,120 +486,134 @@
       document.getElementById('turn-badge').style.backgroundColor = PLAYER_COLORS[player];
       document.getElementById('game-msg').innerText = gameState.message;
       document.getElementById('dice-display').innerText = gameState.rolledNumber !== null ? gameState.rolledNumber : '-';
-      document.getElementById('roll-button').disabled = gameState.isWaitingForMove;
+      document.getElementById('roll-button').disabled = gameState.isWaitingForMove || gameState.isAnimating;
     }
 
-    // --- 6. Dice Roll & Movement Logic ---
+    // --- 6. Core Game Loop ---
     function handleRoll() {
-      if (gameState.isWaitingForMove) return;
-
+      if (gameState.isWaitingForMove || gameState.isAnimating) return;
       playDiceSound();
-      const rollBtn = document.getElementById('roll-button');
-      const diceDisplay = document.getElementById('dice-display');
-      rollBtn.disabled = true;
+      document.getElementById('roll-button').disabled = true;
 
       let counter = 0;
       const animTimer = setInterval(() => {
-        diceDisplay.innerText = Math.floor(Math.random() * 6) + 1;
+        document.getElementById('dice-display').innerText = Math.floor(Math.random() * 6) + 1;
         counter++;
         if (counter > 6) {
           clearInterval(animTimer);
           gameState.rolledNumber = Math.floor(Math.random() * 6) + 1;
-          diceDisplay.innerText = gameState.rolledNumber;
+          document.getElementById('dice-display').innerText = gameState.rolledNumber;
           evaluateRoll();
         }
       }, 45);
     }
 
     function evaluateRoll() {
-      const active = PLAYERS[gameState.currentTurn];
-      const playerTokens = gameState.tokens[active];
+      const playerTokens = gameState.tokens[PLAYERS[gameState.currentTurn]];
+      let hasValidMove = false;
+      playerTokens.forEach(step => {
+        if (step === -1 && gameState.rolledNumber === 6) hasValidMove = true;
+        if (step >= 0 && step + gameState.rolledNumber <= 56) hasValidMove = true;
+      });
 
-      const canExitBase = (gameState.rolledNumber === 6 && playerTokens.some(p => p === -1));
-      const canMoveTrack = playerTokens.some(p => p >= 0);
-
-      if (canExitBase || canMoveTrack) {
-        gameState.message = "Tap a highlighted token!";
+      if (hasValidMove) {
+        gameState.message = "Tap a pulsing token!";
         gameState.isWaitingForMove = true;
       } else {
         gameState.message = "No valid move!";
-        saveState();
-        updateUI();
-        renderTokens();
+        saveState(); updateUI(); renderTokens();
         setTimeout(passTurn, 1000);
         return;
       }
-
-      saveState();
-      updateUI();
-      renderTokens();
+      saveState(); updateUI(); renderTokens();
     }
 
-    function handleTokenTap(player, index) {
-      if (!gameState.isWaitingForMove || player !== PLAYERS[gameState.currentTurn]) return;
+    // Await helper for the hop animation
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
-      const pos = gameState.tokens[player][index];
+    async function handleTokenTap(player, index) {
+      if (!gameState.isWaitingForMove || gameState.isAnimating || player !== PLAYERS[gameState.currentTurn]) return;
 
-      // Bringing token out of the yard on a 6
-      if (pos === -1 && gameState.rolledNumber === 6) {
+      const currentStep = gameState.tokens[player][index];
+
+      // Block invalid moves (exceeding center goal)
+      if (currentStep >= 0 && currentStep + gameState.rolledNumber > 56) return;
+
+      gameState.isWaitingForMove = false;
+      updateUI(); // lock button
+
+      if (currentStep === -1 && gameState.rolledNumber === 6) {
+        // Deploying from base
+        gameState.tokens[player][index] = 0;
         playStepSound();
-        gameState.tokens[player][index] = START_INDEX[player];
-        checkCapture(player, gameState.tokens[player][index]);
-        gameState.message = "Token deployed! Roll again.";
-        gameState.isWaitingForMove = false;
-        saveState();
-        updateUI();
         renderTokens();
-        return; // Rolling 6 earns another roll
-      }
-
-      // Moving active token along the track
-      if (pos >= 0) {
-        playStepSound();
-        gameState.tokens[player][index] = (pos + gameState.rolledNumber) % 52;
-        checkCapture(player, gameState.tokens[player][index]);
+        checkCapture(player, 0);
+        gameState.message = "Deployed! Roll again.";
         gameState.isWaitingForMove = false;
+        saveState(); updateUI(); renderTokens();
+      } else if (currentStep >= 0) {
+        // Sequential Hopping Animation
+        gameState.isAnimating = true;
+        const targetStep = currentStep + gameState.rolledNumber;
+        
+        for (let s = currentStep + 1; s <= targetStep; s++) {
+          gameState.tokens[player][index] = s;
+          playStepSound();
+          renderTokens();
+          await delay(200); // Wait 200ms between each tile hop
+        }
+        gameState.isAnimating = false;
 
-        if (gameState.rolledNumber === 6) {
-          gameState.message = "Rolled 6! Roll again.";
-          saveState();
-          updateUI();
-          renderTokens();
+        const capturedOpponent = checkCapture(player, targetStep);
+        
+        if (targetStep === 56) {
+          gameState.message = "Token Reached Home!";
+        }
+
+        if (gameState.rolledNumber === 6 || capturedOpponent || targetStep === 56) {
+          if(capturedOpponent) gameState.message = "Captured! Roll again.";
+          else if(gameState.rolledNumber === 6) gameState.message = "Rolled 6! Roll again.";
+          saveState(); updateUI(); renderTokens();
         } else {
-          saveState();
-          renderTokens();
           passTurn();
         }
       }
     }
 
-    function checkCapture(activePlayer, trackIndex) {
-      if (SAFE_INDICES.includes(trackIndex)) return; // Safe on star / stump
+    function checkCapture(activePlayer, targetStep) {
+      // Goal and Home Lanes are safe
+      if (targetStep >= 51) return false; 
+      
+      const targetTileId = PATHS[activePlayer][targetStep];
+      const commonIndex = parseInt(targetTileId.split('-')[1]);
+      if (SAFE_INDICES.includes(commonIndex)) return false;
 
+      let captureOccurred = false;
       PLAYERS.forEach(otherColor => {
         if (otherColor !== activePlayer) {
-          gameState.tokens[otherColor].forEach((tPos, idx) => {
-            if (tPos === trackIndex) {
-              gameState.tokens[otherColor][idx] = -1; // Send back to yard
-              playCaptureSound();
-              gameState.message = `${activePlayer.toUpperCase()} captured ${otherColor.toUpperCase()}!`;
+          gameState.tokens[otherColor].forEach((otherStep, idx) => {
+            if (otherStep >= 0 && otherStep <= 50) {
+              if (PATHS[otherColor][otherStep] === targetTileId) {
+                gameState.tokens[otherColor][idx] = -1; // Send back to base
+                captureOccurred = true;
+              }
             }
           });
         }
       });
+      if (captureOccurred) playCaptureSound();
+      return captureOccurred;
     }
 
     function passTurn() {
       gameState.currentTurn = (gameState.currentTurn + 1) % PLAYERS.length;
       gameState.rolledNumber = null;
       gameState.isWaitingForMove = false;
+      gameState.isAnimating = false;
       gameState.message = "Roll the dice";
-      saveState();
-      updateUI();
-      renderTokens();
+      saveState(); updateUI(); renderTokens();
     }
 
-    // --- 7. Application Initialization ---
     loadState();
     buildBoardGrid();
     updateUI();
